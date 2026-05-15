@@ -15,22 +15,21 @@ jobs:
       - run: cd backend && npm install
       - run: cd frontend && npm install && npm run build
 
-  deploy:
+  deploy-server-1:
     needs: build
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        host:
-          - ${{ secrets.EC2_HOST_1 }}
-          - ${{ secrets.EC2_HOST_2 }}
     steps:
-      - name: SSH and Deploy
+      - name: Deploy to EC2 Server 1
+        env:
+          SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
+          HOST: ${{ secrets.EC2_HOST_1 }}
+          GROQ_KEY: ${{ secrets.GROQ_API_KEY }}
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/key.pem
+          echo "$SSH_KEY" > ~/.ssh/key.pem
           chmod 600 ~/.ssh/key.pem
-          ssh-keyscan -H ${{ matrix.host }} >> ~/.ssh/known_hosts
-          ssh -i ~/.ssh/key.pem ubuntu@${{ matrix.host }} << 'EOF'
+          ssh-keyscan -H $HOST >> ~/.ssh/known_hosts
+          ssh -i ~/.ssh/key.pem ubuntu@$HOST << 'EOF'
             cd /home/ubuntu/English-ai-tutor
             git pull origin main
             cd backend && npm install
@@ -40,5 +39,32 @@ jobs:
             sed -i "s|http://localhost:3000|window.location.origin|g" *.jsx
             cd ../.. && npm install && npm run build
             sudo systemctl restart nginx
-            echo "Deployed!"
+            echo "Server 1 Deployed!"
+          EOF
+
+  deploy-server-2:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to EC2 Server 2
+        env:
+          SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
+          HOST: ${{ secrets.EC2_HOST_2 }}
+          GROQ_KEY: ${{ secrets.GROQ_API_KEY }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$SSH_KEY" > ~/.ssh/key.pem
+          chmod 600 ~/.ssh/key.pem
+          ssh-keyscan -H $HOST >> ~/.ssh/known_hosts
+          ssh -i ~/.ssh/key.pem ubuntu@$HOST << 'EOF'
+            cd /home/ubuntu/English-ai-tutor
+            git pull origin main
+            cd backend && npm install
+            pm2 restart fluent-backend
+            cd ../frontend/src/pages
+            sed -i "s|http://localhost:3000/api/|/api/|g" *.jsx
+            sed -i "s|http://localhost:3000|window.location.origin|g" *.jsx
+            cd ../.. && npm install && npm run build
+            sudo systemctl restart nginx
+            echo "Server 2 Deployed!"
           EOF
