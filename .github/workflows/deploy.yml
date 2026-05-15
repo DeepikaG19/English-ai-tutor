@@ -1,0 +1,44 @@
+name: Deploy Fluent AI
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: cd backend && npm install
+      - run: cd frontend && npm install && npm run build
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        host:
+          - ${{ secrets.EC2_HOST_1 }}
+          - ${{ secrets.EC2_HOST_2 }}
+    steps:
+      - name: SSH and Deploy
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/key.pem
+          chmod 600 ~/.ssh/key.pem
+          ssh-keyscan -H ${{ matrix.host }} >> ~/.ssh/known_hosts
+          ssh -i ~/.ssh/key.pem ubuntu@${{ matrix.host }} << 'EOF'
+            cd /home/ubuntu/English-ai-tutor
+            git pull origin main
+            cd backend && npm install
+            pm2 restart fluent-backend
+            cd ../frontend/src/pages
+            sed -i "s|http://localhost:3000/api/|/api/|g" *.jsx
+            sed -i "s|http://localhost:3000|window.location.origin|g" *.jsx
+            cd ../.. && npm install && npm run build
+            sudo systemctl restart nginx
+            echo "Deployed!"
+          EOF
