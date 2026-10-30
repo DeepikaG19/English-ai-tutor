@@ -75,6 +75,13 @@ io.on('connection', (socket) => {
     console.log('Client disconnected:', socket.id);
     sessions.delete(socket.id);
   });
+// Health check routes
+app.get('/', (req, res) => {
+  res.json({ success: true, message: 'English AI Tutor backend is running' });
+});
+
+app.get('/api/health', (req, res) => {
+  res.json({ success: true, status: 'healthy' });
 });
 
 // Authentication Routes

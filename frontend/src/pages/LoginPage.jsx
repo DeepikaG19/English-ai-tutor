@@ -35,7 +35,12 @@ export default function LoginPage() {
         navigate('/daily-challenge');
       }
     } catch (err) {
-      setError(err.response?.data?.message || 'Invalid username or password.');
+      console.error('Login error:', err);
+      const message = err.response?.data?.message 
+        || (err.code === 'ERR_NETWORK' || err.message === 'Network Error' 
+            ? `Unable to connect to server at ${API_BASE_URL}. Ensure your Render backend is awake and running.` 
+            : err.message || 'Invalid username or password.');
+      setError(message);
     } finally {
       setIsLoading(false);
     }

@@ -47,7 +47,12 @@ export default function SignUpPage() {
         navigate('/daily-challenge');
       }
     } catch (err) {
-      setError(err.response?.data?.message || 'An error occurred during sign up.');
+      console.error('Signup error:', err);
+      const message = err.response?.data?.message 
+        || (err.code === 'ERR_NETWORK' || err.message === 'Network Error' 
+            ? `Unable to connect to server at ${API_BASE_URL}. Ensure your Render backend is awake and running.` 
+            : err.message || 'An error occurred during sign up.');
+      setError(message);
     } finally {
       setIsLoading(false);
     }
