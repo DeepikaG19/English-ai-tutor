@@ -3,9 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Mic, Square, Loader2, ArrowLeft, Send, Volume2, VolumeX } from 'lucide-react';
 import '../index.css';
+import { API_BASE_URL } from '../config';
 
-const TRANSCRIBE_URL = 'http://localhost:3000/api/transcribe';
-const SPEAK_FREE_URL = 'http://localhost:3000/api/speak-free';
+const TRANSCRIBE_URL = `${API_BASE_URL}/api/transcribe`;
+const SPEAK_FREE_URL = `${API_BASE_URL}/api/speak-free`;
 
 export default function SpeakFreePage() {
   const navigate = useNavigate();

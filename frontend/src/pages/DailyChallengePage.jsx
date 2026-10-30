@@ -4,6 +4,7 @@ import axios from 'axios';
 import { Gem, ArrowRight } from 'lucide-react';
 import '../auth.css';
 import heroImg from '../assets/hero.png';
+import { API_BASE_URL } from '../config';
 
 export default function DailyChallengePage() {
   const navigate = useNavigate();
@@ -26,7 +27,7 @@ export default function DailyChallengePage() {
 
   const fetchDailyQuiz = async () => {
     try {
-      const res = await axios.get(`http://localhost:3000/api/daily-quiz?username=${username}`);
+      const res = await axios.get(`${API_BASE_URL}/api/daily-quiz?username=${username}`);
       setDailyQuiz(res.data);
       setStreak(res.data.streak);
       setHasAttemptedToday(res.data.hasAttemptedToday);
@@ -42,7 +43,7 @@ export default function DailyChallengePage() {
   const handleSubmitQuiz = async () => {
     if (!selectedOption) return;
     try {
-      const res = await axios.post('http://localhost:3000/api/submit-quiz', {
+      const res = await axios.post(`${API_BASE_URL}/api/submit-quiz`, {
         username,
         answer: selectedOption,
         date: dailyQuiz.date

@@ -4,6 +4,7 @@ import axios from 'axios';
 import { Eye, EyeOff, ArrowLeft } from 'lucide-react';
 import '../auth.css';
 import heroImg from '../assets/hero.png';
+import { API_BASE_URL } from '../config';
 
 export default function SignUpPage() {
   const navigate = useNavigate();
@@ -34,7 +35,7 @@ export default function SignUpPage() {
 
     setIsLoading(true);
     try {
-      const response = await axios.post('http://localhost:3000/api/signup', {
+      const response = await axios.post(`${API_BASE_URL}/api/signup`, {
         fullName,
         email,
         username,

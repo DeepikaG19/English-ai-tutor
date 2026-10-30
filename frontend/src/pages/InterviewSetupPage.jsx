@@ -4,8 +4,9 @@ import axios from 'axios';
 import { ArrowLeft, UploadCloud, FileText, Loader2 } from 'lucide-react';
 import { io } from 'socket.io-client';
 import '../auth.css';
+import { API_BASE_URL } from '../config';
 
-const SOCKET_URL = 'http://localhost:3000';
+const SOCKET_URL = API_BASE_URL;
 
 export default function InterviewSetupPage() {
   const navigate = useNavigate();
@@ -45,7 +46,7 @@ export default function InterviewSetupPage() {
         formData.append('socketId', socket.id);
 
         try {
-          const response = await axios.post('http://localhost:3000/api/interview/setup', formData, {
+          const response = await axios.post(`${API_BASE_URL}/api/interview/setup`, formData, {
             headers: { 'Content-Type': 'multipart/form-data' }
           });
 

@@ -4,6 +4,7 @@ import axios from 'axios';
 import { Eye, EyeOff, ArrowLeft } from 'lucide-react';
 import '../auth.css';
 import heroImg from '../assets/hero.png';
+import { API_BASE_URL } from '../config';
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -24,7 +25,7 @@ export default function LoginPage() {
 
     setIsLoading(true);
     try {
-      const response = await axios.post('http://localhost:3000/api/login', {
+      const response = await axios.post(`${API_BASE_URL}/api/login`, {
         identifier,
         password
       });

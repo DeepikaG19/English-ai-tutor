@@ -3,8 +3,9 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Mic, Square, Loader2, ArrowLeft, Send, Volume2, VolumeX } from 'lucide-react';
 import '../index.css';
+import { API_BASE_URL } from '../config';
 
-const API_URL = 'http://localhost:3000/api/speaking-practice';
+const API_URL = `${API_BASE_URL}/api/speaking-practice`;
 
 
 
@@ -96,7 +97,7 @@ function ChatPage() {
           formData.append('audio', audioBlob, 'recording.webm');
 
           try {
-            const response = await axios.post('http://localhost:3000/api/transcribe', formData);
+            const response = await axios.post(`${API_BASE_URL}/api/transcribe`, formData);
             if (response.data.text) {
               setInputText((prev) => prev + (prev ? ' ' : '') + response.data.text);
             }
@@ -163,7 +164,7 @@ function ChatPage() {
     setTask('Generating a new task for you...');
     
     try {
-      const res = await axios.get(`http://localhost:3000/api/speaking-task?level=${currentLevel}`);
+      const res = await axios.get(`${API_BASE_URL}/api/speaking-task?level=${currentLevel}`);
       setTask(res.data.task);
     } catch (e) {
       console.error("Failed to load new task", e);

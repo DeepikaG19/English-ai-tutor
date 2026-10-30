@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Mic, Square, Loader2, VolumeX, ArrowLeft } from 'lucide-react';
 import '../index.css';
+import { API_BASE_URL } from '../config';
 
 export default function InterviewPage() {
   const location = useLocation();
@@ -99,7 +100,7 @@ export default function InterviewPage() {
           formData.append('socketId', socketId);
 
           try {
-            const response = await axios.post('http://localhost:3000/api/interview/chat', formData, {
+            const response = await axios.post(`${API_BASE_URL}/api/interview/chat`, formData, {
               headers: { 'Content-Type': 'multipart/form-data' }
             });
 
