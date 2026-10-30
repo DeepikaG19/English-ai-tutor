@@ -426,7 +426,7 @@ app.get('/api/speaking-task', async (req, res) => {
     res.json({ task });
   } catch (error) {
     console.error("Error generating task:", error);
-    res.status(500).json({ error: 'Failed to generate task' });
+    res.status(500).json({ error: error.message || 'Failed to generate task' });
   }
 });
 
@@ -544,7 +544,7 @@ Provide the response in the following JSON format EXACTLY. Ensure the "score" is
 
   } catch (error) {
     console.error("Error processing speaking practice:", error);
-    res.status(500).json({ error: 'Failed to process speaking practice' });
+    res.status(500).json({ error: error.message || 'Failed to process speaking practice' });
   }
 });
 
@@ -641,7 +641,7 @@ Provide the response in the following JSON format EXACTLY:
 
   } catch (error) {
     console.error("Error processing speak free:", error);
-    res.status(500).json({ error: 'Failed to process speak free' });
+    res.status(500).json({ error: error.message || 'Failed to process speak free' });
   }
 });
 

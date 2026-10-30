@@ -104,7 +104,8 @@ export default function SpeakFreePage() {
       }
     } catch (err) {
       console.error("Error submitting practice:", err);
-      alert("Failed to process your response. Please try again.");
+      const detail = err.response?.data?.error || err.response?.data?.message || err.message || "Failed to process your response. Please try again.";
+      alert(`Error: ${detail}`);
     } finally {
       setIsProcessing(false);
     }
